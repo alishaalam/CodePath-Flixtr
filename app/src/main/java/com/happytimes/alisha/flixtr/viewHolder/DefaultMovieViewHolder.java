@@ -24,7 +24,7 @@ public class DefaultMovieViewHolder extends RecyclerView.ViewHolder {
         this.vPosterPath = (ImageView) itemView.findViewById(R.id.ivPosterPath);
         this.vOverview = (TextView) itemView.findViewById(R.id.tvOverview);
         this.vTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-        //this.vBackdropPath = (ImageView) itemView.findViewById(R.id.ivBackdropPath);
+        this.vBackdropPath = (ImageView) itemView.findViewById(R.id.ivBackdropPath);
     }
 
 

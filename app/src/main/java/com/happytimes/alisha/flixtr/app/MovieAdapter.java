@@ -1,6 +1,7 @@
 package com.happytimes.alisha.flixtr.app;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,8 +100,6 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 configureDefaultMovieViewHolder(defaultMovieViewHolder, position);
                 break;
         }
-
-
     }
 
 
@@ -110,13 +109,22 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (mImageLoader == null)
                 mImageLoader = VolleySingleton.getInstance(mContext.getApplicationContext()).getImageLoader();
 
+
+            //Always show backdrop image for popular movies, irrespective of device orientation
             Picasso.with(mContext)
                     .load(result.getBackdropPath())
-                    .fit().centerInside()
+                    .placeholder(R.drawable.ic_movie_placeholder)
                     .into(popularMovieViewHolder.vBackdropPath);
 
-        }
+            int orientation = mContext.getResources().getConfiguration().orientation;
 
+            //Show movie title and overview only if the device is in landscape mode
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+                popularMovieViewHolder.vTitle.setText(result.getTitle());
+                popularMovieViewHolder.vOverview.setText(result.getOverview());
+            }
+        }
     }
 
     private void configureDefaultMovieViewHolder(DefaultMovieViewHolder defaultMovieViewHolder, int position) {
@@ -129,12 +137,23 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             defaultMovieViewHolder.vTitle.setText(result.getTitle());
             defaultMovieViewHolder.vOverview.setText(result.getOverview());
-            Picasso.with(mContext)
-                    .load(result.getPosterPath())
-                    .into(defaultMovieViewHolder.vPosterPath);
-            /*.fit().centerCrop()
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)*/
+
+
+            int orientation = mContext.getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                Picasso.with(mContext)
+                        .load(result.getPosterPath())
+                        .fit().centerInside()
+                        .placeholder(R.drawable.ic_movie_placeholder)
+                        .into(defaultMovieViewHolder.vPosterPath);
+
+            }else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+                Picasso.with(mContext)
+                        .load(result.getBackdropPath())
+                        .placeholder(R.drawable.ic_movie_placeholder)
+                        .into(defaultMovieViewHolder.vBackdropPath);
+            }
         }
     }
 
