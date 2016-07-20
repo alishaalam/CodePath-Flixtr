@@ -113,6 +113,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             //Always show backdrop image for popular movies, irrespective of device orientation
             Picasso.with(mContext)
                     .load(result.getBackdropPath())
+                    .fit()
                     .placeholder(R.drawable.ic_movie_placeholder)
                     .into(popularMovieViewHolder.vBackdropPath);
 
