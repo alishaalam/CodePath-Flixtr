@@ -49,6 +49,9 @@ public class MovieListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
+        //To reduce overdraw
+        getWindow().setBackgroundDrawable(null);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
@@ -129,7 +132,7 @@ public class MovieListActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.movie_list_content, parent, false);
+                    .inflate(R.layout.default_movie_list_content, parent, false);
             return new ViewHolder(view);
         }
 

@@ -10,7 +10,9 @@ import com.android.volley.toolbox.ImageLoader;
 import com.happytimes.alisha.flixtr.R;
 import com.happytimes.alisha.flixtr.helper.VolleySingleton;
 import com.happytimes.alisha.flixtr.model.Result;
-import com.happytimes.alisha.flixtr.viewHolder.MovieViewHolder;
+import com.happytimes.alisha.flixtr.viewHolder.DefaultMovieViewHolder;
+import com.happytimes.alisha.flixtr.viewHolder.PopularMovieViewHolder;
+import com.happytimes.alisha.flixtr.viewHolder.ProgressViewHolder;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.List;
 /**
  * Created by alishaalam on 7/19/16.
  */
-public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
     Context mContext;
@@ -27,6 +29,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     ImageLoader mImageLoader;
 
+    //Constants to help with ViewType
+    //Represents end of the list
+    public static final int VIEW_PROG = 0;
+    //Represent object types in the list
+    public static final int DEFAULT_MOVIE = 2, POPULAR_MOVIE = 1;
 
 
     public MovieAdapter(Context context, List<Result> movies) {
@@ -34,34 +41,102 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         this.mMoviesList = movies;
     }
 
+
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.movie_list_content, parent, false);
-        return new MovieViewHolder(itemView);
+    public int getItemCount() {
+        return mMoviesList.size();
+    }
+
+    /**
+     * Returns the view type of the item at position for view recycling
+     **/
+    @Override
+    public int getItemViewType(int position) {
+        if (mMoviesList.get(position) == null) {
+            return VIEW_PROG;
+        } else {
+            if (mMoviesList.get(position).getVoteAverage() > 5.0) {
+                return POPULAR_MOVIE;
+            } else {
+                return DEFAULT_MOVIE;
+            }
+        }
     }
 
     @Override
-    public void onBindViewHolder(MovieViewHolder movieViewHolder, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder;
+        mContext = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        switch (viewType) {
+            case VIEW_PROG:
+                View v0 = inflater.inflate(R.layout.progressbar_item, parent, false);
+                viewHolder = new ProgressViewHolder(v0);
+                break;
+            case POPULAR_MOVIE:
+                View v2 = inflater.inflate(R.layout.popular_movie_list_content, parent, false);
+                viewHolder = new PopularMovieViewHolder(v2);
+                break;
+            default:
+                View v1 = inflater.inflate(R.layout.default_movie_list_content, parent, false);
+                viewHolder = new DefaultMovieViewHolder(v1);
+        }
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        switch (viewHolder.getItemViewType()) {
+            case VIEW_PROG:
+                ((ProgressViewHolder) viewHolder).progressBar.setIndeterminate(true);
+                break;
+            case POPULAR_MOVIE:
+                PopularMovieViewHolder popularMovieViewHolder = (PopularMovieViewHolder) viewHolder;
+                configurePopularMovieViewHolder(popularMovieViewHolder, position);
+                break;
+            case DEFAULT_MOVIE:
+                DefaultMovieViewHolder defaultMovieViewHolder = (DefaultMovieViewHolder) viewHolder;
+                configureDefaultMovieViewHolder(defaultMovieViewHolder, position);
+                break;
+        }
+
+
+    }
+
+
+    private void configurePopularMovieViewHolder(PopularMovieViewHolder popularMovieViewHolder, int position) {
+        final Result result = mMoviesList.get(position);
+        if (result != null) {
+            if (mImageLoader == null)
+                mImageLoader = VolleySingleton.getInstance(mContext.getApplicationContext()).getImageLoader();
+
+            Picasso.with(mContext)
+                    .load(result.getBackdropPath())
+                    .fit().centerInside()
+                    .into(popularMovieViewHolder.vBackdropPath);
+
+        }
+
+    }
+
+    private void configureDefaultMovieViewHolder(DefaultMovieViewHolder defaultMovieViewHolder, int position) {
+
         final Result result = mMoviesList.get(position);
         if (result != null) {
             if (mImageLoader == null)
                 mImageLoader = VolleySingleton.getInstance(mContext.getApplicationContext()).getImageLoader();
 
 
-            movieViewHolder.vTitle.setText(result.getTitle());
-            movieViewHolder.vOverview.setText(result.getOverview());
+            defaultMovieViewHolder.vTitle.setText(result.getTitle());
+            defaultMovieViewHolder.vOverview.setText(result.getOverview());
             Picasso.with(mContext)
                     .load(result.getPosterPath())
-                    .into(movieViewHolder.vPosterPath);
+                    .into(defaultMovieViewHolder.vPosterPath);
             /*.fit().centerCrop()
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.mipmap.ic_launcher)*/
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return mMoviesList.size();
-    }
+
 }

@@ -10,7 +10,7 @@ import com.happytimes.alisha.flixtr.R;
 /**
  * Created by alishaalam on 7/19/16.
  */
-public class MovieViewHolder extends RecyclerView.ViewHolder {
+public class DefaultMovieViewHolder extends RecyclerView.ViewHolder {
 
 
     public ImageView vPosterPath;
@@ -19,7 +19,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
     public ImageView vBackdropPath;
 
 
-    public MovieViewHolder(View itemView) {
+    public DefaultMovieViewHolder(View itemView) {
         super(itemView);
         this.vPosterPath = (ImageView) itemView.findViewById(R.id.ivPosterPath);
         this.vOverview = (TextView) itemView.findViewById(R.id.tvOverview);
