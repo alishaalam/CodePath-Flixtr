@@ -12,7 +12,7 @@ import com.happytimes.alisha.flixtr.R;
  */
 public class DefaultMovieViewHolder extends RecyclerView.ViewHolder {
 
-
+    public View vView;
     public ImageView vPosterPath;
     public TextView vOverview;
     public TextView vTitle;
@@ -21,6 +21,7 @@ public class DefaultMovieViewHolder extends RecyclerView.ViewHolder {
 
     public DefaultMovieViewHolder(View itemView) {
         super(itemView);
+        this.vView = itemView;
         this.vPosterPath = (ImageView) itemView.findViewById(R.id.ivPosterPath);
         this.vOverview = (TextView) itemView.findViewById(R.id.tvOverview);
         this.vTitle = (TextView) itemView.findViewById(R.id.tvTitle);

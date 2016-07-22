@@ -13,18 +13,18 @@ import com.happytimes.alisha.flixtr.R;
 public class PopularMovieViewHolder extends RecyclerView.ViewHolder {
 
 
+    public View vView;
     public ImageView vBackdropPath;
     public TextView vOverview;
     public TextView vTitle;
 
 
+
     public PopularMovieViewHolder(View itemView) {
         super(itemView);
+        this.vView = itemView;
         this.vBackdropPath = (ImageView) itemView.findViewById(R.id.ivBackdropPath);
         this.vOverview = (TextView) itemView.findViewById(R.id.tvOverview);
         this.vTitle = (TextView) itemView.findViewById(R.id.tvTitle);
     }
-
-
-
 }

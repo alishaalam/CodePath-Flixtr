@@ -1,11 +1,15 @@
 package com.happytimes.alisha.flixtr.app;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -14,10 +18,12 @@ import com.happytimes.alisha.flixtr.R;
 import com.happytimes.alisha.flixtr.helper.JacksonRequest;
 import com.happytimes.alisha.flixtr.helper.VolleySingleton;
 import com.happytimes.alisha.flixtr.model.Movie;
-import com.happytimes.alisha.flixtr.model.Result;
+import com.happytimes.alisha.flixtr.model.MovieCollection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An activity representing a list of Movies. This activity
@@ -33,15 +39,17 @@ public class MovieListActivity extends AppCompatActivity {
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    public static boolean mTwoPane;
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
-    List<Result> moviesList = new ArrayList<>();
+    List<Movie> moviesList = new ArrayList<>();
 
     private static final String TAG = MovieListActivity.class.getSimpleName();
     public static final String MOVIE_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
     public static final String API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
     //public static final String PAGE_NUMBER = "/1";
+
+    public static final Map<String, Movie> MOVIE_MAP = new HashMap<>();
 
 
     @Override
@@ -79,14 +87,43 @@ public class MovieListActivity extends AppCompatActivity {
         movieAdapter =  new MovieAdapter(this, moviesList);
         recyclerView.setAdapter(movieAdapter);
         recyclerView.setHasFixedSize(true);
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Movie movie = moviesList.get(position);
+                Toast.makeText(getApplicationContext(), movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
+
+                if (mTwoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putString(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(movie.getId()));
+                    MovieDetailFragment fragment = new MovieDetailFragment();
+                    fragment.setArguments(arguments);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.movie_detail_container, fragment)
+                            .commit();
+                } else {
+                    Context mContext = view.getContext();
+                    Intent intent = new Intent(mContext, MovieDetailActivity.class);
+                    intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(movie.getId()));
+                    mContext.startActivity(intent);
+                }
+
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
     }
 
     private void makeJSONRequest(String url) {
 
-        JacksonRequest<Movie> jacksonRequest = new JacksonRequest<>
-                (Request.Method.GET, url, null, Movie.class, new Response.Listener<Movie>() {
+        JacksonRequest<MovieCollection> jacksonRequest = new JacksonRequest<>
+                (Request.Method.GET, url, null, MovieCollection.class, new Response.Listener<MovieCollection>() {
                     @Override
-                    public void onResponse(Movie response) {
+                    public void onResponse(MovieCollection response) {
                         Log.d(TAG+"Response", response.toString());
                         parseResponseDetails(response);
                     }
@@ -103,89 +140,19 @@ public class MovieListActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(jacksonRequest, TAG);
     }
 
-    private void parseResponseDetails(Movie response) {
+    private void parseResponseDetails(MovieCollection response) {
 
         moviesList.addAll(response.getResults());
         displayDetails();
+        addMoviesToMap();
+    }
+
+    private void addMoviesToMap() {
+        for (Movie m : moviesList)
+        MOVIE_MAP.put(String.valueOf(m.getId()), m);
     }
 
     private void displayDetails() {
         movieAdapter.notifyDataSetChanged();
     }
-
-
-
-
-    /*private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
-    }*/
-
-    /*public class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
-        private final List<DummyContent.DummyItem> mValues;
-
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.default_movie_list_content, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
-
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        MovieDetailFragment fragment = new MovieDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.movie_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context mContext = v.getContext();
-                        Intent intent = new Intent(mContext, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
-                        mContext.startActivity(intent);
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValues.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
-
-            public ViewHolder(View view) {
-                super(view);
-                mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
-            }
-
-            @Override
-            public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
-            }
-        }
-    }*/
 }

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.android.volley.toolbox.ImageLoader;
 import com.happytimes.alisha.flixtr.R;
 import com.happytimes.alisha.flixtr.helper.VolleySingleton;
-import com.happytimes.alisha.flixtr.model.Result;
+import com.happytimes.alisha.flixtr.model.Movie;
 import com.happytimes.alisha.flixtr.viewHolder.DefaultMovieViewHolder;
 import com.happytimes.alisha.flixtr.viewHolder.PopularMovieViewHolder;
 import com.happytimes.alisha.flixtr.viewHolder.ProgressViewHolder;
@@ -26,7 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
     Context mContext;
-    private List<Result> mMoviesList = new ArrayList<>();
+    private List<Movie> mMoviesList = new ArrayList<>();
 
     ImageLoader mImageLoader;
 
@@ -37,11 +37,10 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int DEFAULT_MOVIE = 2, POPULAR_MOVIE = 1;
 
 
-    public MovieAdapter(Context context, List<Result> movies) {
+    public MovieAdapter(Context context, List<Movie> movies) {
         this.mContext = context;
         this.mMoviesList = movies;
     }
-
 
     @Override
     public int getItemCount() {
@@ -104,15 +103,14 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
     private void configurePopularMovieViewHolder(PopularMovieViewHolder popularMovieViewHolder, int position) {
-        final Result result = mMoviesList.get(position);
-        if (result != null) {
+        final Movie movie = mMoviesList.get(position);
+        if (movie != null) {
             if (mImageLoader == null)
                 mImageLoader = VolleySingleton.getInstance(mContext.getApplicationContext()).getImageLoader();
 
-
             //Always show backdrop image for popular movies, irrespective of device orientation
             Picasso.with(mContext)
-                    .load(result.getBackdropPath())
+                    .load(movie.getBackdropPath())
                     .fit()
                     .placeholder(R.drawable.ic_movie_placeholder)
                     .into(popularMovieViewHolder.vBackdropPath);
@@ -122,41 +120,36 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             //Show movie title and overview only if the device is in landscape mode
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
-                popularMovieViewHolder.vTitle.setText(result.getTitle());
-                popularMovieViewHolder.vOverview.setText(result.getOverview());
+                popularMovieViewHolder.vTitle.setText(movie.getTitle());
+                popularMovieViewHolder.vOverview.setText(movie.getOverview());
             }
         }
     }
 
     private void configureDefaultMovieViewHolder(DefaultMovieViewHolder defaultMovieViewHolder, int position) {
 
-        final Result result = mMoviesList.get(position);
-        if (result != null) {
+        final Movie movie = mMoviesList.get(position);
+        if (movie != null) {
             if (mImageLoader == null)
                 mImageLoader = VolleySingleton.getInstance(mContext.getApplicationContext()).getImageLoader();
 
-
-            defaultMovieViewHolder.vTitle.setText(result.getTitle());
-            defaultMovieViewHolder.vOverview.setText(result.getOverview());
-
+            defaultMovieViewHolder.vTitle.setText(movie.getTitle());
+            defaultMovieViewHolder.vOverview.setText(movie.getOverview());
 
             int orientation = mContext.getResources().getConfiguration().orientation;
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 Picasso.with(mContext)
-                        .load(result.getPosterPath())
+                        .load(movie.getPosterPath())
                         .fit().centerInside()
                         .placeholder(R.drawable.ic_movie_placeholder)
                         .into(defaultMovieViewHolder.vPosterPath);
-
             }else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
                 Picasso.with(mContext)
-                        .load(result.getBackdropPath())
+                        .load(movie.getBackdropPath())
                         .placeholder(R.drawable.ic_movie_placeholder)
                         .into(defaultMovieViewHolder.vBackdropPath);
             }
         }
     }
-
-
 }
