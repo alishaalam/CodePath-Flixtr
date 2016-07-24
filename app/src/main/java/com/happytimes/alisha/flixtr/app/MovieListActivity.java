@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ import com.happytimes.alisha.flixtr.model.Movie;
 import com.happytimes.alisha.flixtr.model.MovieCollection;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,4 +159,58 @@ public class MovieListActivity extends AppCompatActivity {
     private void displayDetails() {
         movieAdapter.notifyDataSetChanged();
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuSortPopularity:
+                Collections.sort(moviesList, MoviePopularityDescComparator);
+                movieAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.menuSortDateReleased:
+                Collections.sort(moviesList, MovieDateReleasedComparator);
+                movieAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.menuSortTitle:
+                Collections.sort(moviesList, MovieTitleComparator);
+                movieAdapter.notifyDataSetChanged();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public static Comparator<Movie> MoviePopularityDescComparator = new Comparator<Movie>() {
+
+        public int compare(Movie m1, Movie m2) {
+            return Double.compare(m2.getPopularity(), m1.getPopularity());
+        }
+    };
+
+    public static Comparator<Movie> MovieTitleComparator = new Comparator<Movie>() {
+
+        public int compare(Movie m1, Movie m2) {
+            return m1.getTitle().compareToIgnoreCase(m2.getTitle());
+        }
+    };
+
+
+    public static Comparator<Movie> MovieDateReleasedComparator = new Comparator<Movie>() {
+
+        public int compare(Movie m1, Movie m2) {
+
+            String date1 = m1.getReleaseDate();
+            String date2 = m2.getReleaseDate();
+
+            return date1.compareToIgnoreCase(date2);
+        }
+    };
 }

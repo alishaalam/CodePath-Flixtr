@@ -159,7 +159,7 @@ public class Movie {
     }
 
     public String getBackdropPath() {
-        return String.format("http://image.tmdb.org/t/p/w342%s", backdropPath);
+        return String.format("http://image.tmdb.org/t/p/w780%s", backdropPath);
     }
 
     public void setBackdropPath(String backdropPath) {
