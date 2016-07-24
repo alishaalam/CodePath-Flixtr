@@ -86,9 +86,8 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
+        // Show the content as specified in the layout
         if (mMovie != null) {
-
 
             RatingBar rbProductRating = (RatingBar) rootView.findViewById(R.id.movie_review_rating);
             float rating = ((float) mMovie.getVoteAverage() * MAX_RATING) / MAX_VOTE_AVERAGE;

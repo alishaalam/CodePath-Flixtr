@@ -61,6 +61,16 @@ public class Movie {
     @JsonProperty("vote_average")
     private double voteAverage;
 
+    public List<MovieTrailer> getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(List<MovieTrailer> trailers) {
+        this.trailers = trailers;
+    }
+
+    private List<MovieTrailer> trailers;
+
     /**
      * No args constructor for use in serialization
      *
@@ -204,5 +214,12 @@ public class Movie {
                 "overview='" + overview + '\'' +
                 ", title='" + title + '\'' +
                 '}';
+    }
+
+    public boolean isPopular() {
+        if (voteAverage > 5.0)
+                return true;
+        else
+            return false;
     }
 }

@@ -31,6 +31,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".app.MovieListActivity" />
         </activity>
+        <activity
+            android:name=".app.QuickPlayActivity"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

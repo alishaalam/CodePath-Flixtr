@@ -20,6 +20,8 @@ import com.happytimes.alisha.flixtr.helper.JacksonRequest;
 import com.happytimes.alisha.flixtr.helper.VolleySingleton;
 import com.happytimes.alisha.flixtr.model.Movie;
 import com.happytimes.alisha.flixtr.model.MovieCollection;
+import com.happytimes.alisha.flixtr.model.MovieTrailer;
+import com.happytimes.alisha.flixtr.model.TrailerCollection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +38,9 @@ public class MovieListActivity extends AppCompatActivity {
     List<Movie> moviesList = new ArrayList<>();
 
     private static final String TAG = MovieListActivity.class.getSimpleName();
-    public static final String MOVIE_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
+    public static final String NOW_PLAYING_MOVIES_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
+    public static final String MOVIE_HOST_URL= "https://api.themoviedb.org/3/movie/";
+    public static final String MOVIE_TRAILER_URL= "/trailers?api_key=";
     public static final String API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
 
     public static final Map<String, Movie> MOVIE_MAP = new HashMap<>();
@@ -54,15 +58,14 @@ public class MovieListActivity extends AppCompatActivity {
 
         initializeRecyclerView();
 
-        makeJSONRequest(MOVIE_URL + API_KEY);
+        getNowPlayingMovies(NOW_PLAYING_MOVIES_URL + API_KEY);
 
         if (findViewById(R.id.movie_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
     }
 
     private void initializeRecyclerView() {
@@ -78,10 +81,10 @@ public class MovieListActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Movie movie = moviesList.get(position);
+                Movie mMovie = moviesList.get(position);
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(movie.getId()));
+                    arguments.putString(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(mMovie.getId()));
                     MovieDetailFragment fragment = new MovieDetailFragment();
                     fragment.setArguments(arguments);
                     getSupportFragmentManager().beginTransaction()
@@ -89,8 +92,15 @@ public class MovieListActivity extends AppCompatActivity {
                             .commit();
                 } else {
                     Context mContext = view.getContext();
-                    Intent intent = new Intent(mContext, MovieDetailActivity.class);
-                    intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(movie.getId()));
+                    Intent intent;
+                    if(mMovie.isPopular()) {
+                        intent = new Intent(mContext, QuickPlayActivity.class);
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(mMovie.getId()));
+                    } else {
+                        intent = new Intent(mContext, MovieDetailActivity.class);
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(mMovie.getId()));
+                    }
+
                     mContext.startActivity(intent);
                 }
             }
@@ -102,14 +112,14 @@ public class MovieListActivity extends AppCompatActivity {
         }));
     }
 
-    private void makeJSONRequest(String url) {
+    private void getNowPlayingMovies(String url) {
 
         JacksonRequest<MovieCollection> jacksonRequest = new JacksonRequest<>
                 (Request.Method.GET, url, null, MovieCollection.class, new Response.Listener<MovieCollection>() {
                     @Override
                     public void onResponse(MovieCollection response) {
                         Log.d(TAG+"Response", response.toString());
-                        parseResponseDetails(response);
+                        parseNowPlayingMoviesResponse(response);
                     }
 
                 }, new Response.ErrorListener() {
@@ -124,16 +134,50 @@ public class MovieListActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(jacksonRequest, TAG);
     }
 
-    private void parseResponseDetails(MovieCollection response) {
+    private void parseNowPlayingMoviesResponse(MovieCollection response) {
 
         moviesList.addAll(response.getResults());
         displayDetails();
         addMoviesToMap();
+        getMovieTrailerDetails(MOVIE_HOST_URL, moviesList, MOVIE_TRAILER_URL, API_KEY);
+    }
+
+
+    private void getMovieTrailerDetails(String movieHostUrl, List<Movie> moviesList, String movieTrailerUrl, String apiKey) {
+
+        for (final Movie movie : moviesList) {
+            String url = movieHostUrl + String.valueOf(movie.getId()) + movieTrailerUrl + apiKey;
+            JacksonRequest<TrailerCollection> jacksonRequest = new JacksonRequest<>
+                    (Request.Method.GET, url, null, TrailerCollection.class, new Response.Listener<TrailerCollection>() {
+                        @Override
+                        public void onResponse(TrailerCollection response) {
+                            Log.d(TAG + "Response", response.toString());
+                            parseTrailerDetails(movie, response);
+                        }
+
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
+                        }
+                    });
+
+            // Adding a request (in this example, called jacksonRequest) to the RequestQueue.
+            VolleySingleton.getInstance(this).addToRequestQueue(jacksonRequest, TAG);
+        }
+
+    }
+
+    private void parseTrailerDetails(Movie movie, TrailerCollection response) {
+        Log.d(TAG, response.toString());
+        List<MovieTrailer> trailerList = response.getMovieTrailers();
+        movie.setTrailers(trailerList);
     }
 
     private void addMoviesToMap() {
         for (Movie m : moviesList)
-        MOVIE_MAP.put(String.valueOf(m.getId()), m);
+            MOVIE_MAP.put(String.valueOf(m.getId()), m);
     }
 
     private void displayDetails() {
