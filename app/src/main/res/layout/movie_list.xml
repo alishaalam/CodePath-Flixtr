@@ -6,8 +6,8 @@
     android:name="com.happytimes.alisha.flixtr.MovieListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".app.MovieListActivity"
-    tools:listitem="@layout/default_movie_list_content" />
+     />

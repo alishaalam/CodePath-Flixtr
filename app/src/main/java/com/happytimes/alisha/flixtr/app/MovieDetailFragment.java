@@ -15,6 +15,8 @@ import com.happytimes.alisha.flixtr.R;
 import com.happytimes.alisha.flixtr.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 /**
  * A fragment representing a single Movie detail screen.
  * This fragment is either contained in a {@link MovieListActivity}
@@ -57,11 +59,13 @@ public class MovieDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
+
                 ImageView movie_poster = (ImageView) activity.findViewById(R.id.movie_detail_poster);
                 Picasso.with(getActivity())
                         .load(mMovie.getPosterPath())
                         .fit()
                         .placeholder(R.drawable.ic_movie_placeholder)
+                        .transform(new RoundedCornersTransformation(10, 10))
                         .into(movie_poster);
 
 
@@ -70,6 +74,7 @@ public class MovieDetailFragment extends Fragment {
                         .load(mMovie.getBackdropPath())
                         .fit()
                         .placeholder(R.drawable.ic_movie_placeholder)
+                        .transform(new RoundedCornersTransformation(10, 10))
                         .into(movie_backdrop);
 
             }

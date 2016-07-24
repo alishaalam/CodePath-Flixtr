@@ -36,7 +36,6 @@
             android:textStyle="bold"
             tools:text="Title"/>
 
-
         <TextView
             android:id="@+id/tvOverview"
             android:layout_width="wrap_content"
@@ -45,10 +44,11 @@
             android:layout_toRightOf="@+id/ivPosterPath"
             android:layout_toEndOf="@+id/ivPosterPath"
             android:textSize="@dimen/overview"
-            tools:text="This is a long text as its meant to be an overview."/>
-
+            tools:text="This is a long text as its meant to be an overview.This is a long text as its meant to be an overview.This is a long text as its meant to be an overview."
+            android:gravity="fill_vertical"
+            android:layout_centerVertical="true"
+            android:maxLines="6"
+            android:ellipsize="end"
+            android:typeface="serif"/>
     </RelativeLayout>
-
-
-
 </android.support.v7.widget.CardView>

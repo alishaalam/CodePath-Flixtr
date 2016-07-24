@@ -19,6 +19,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 /**
  * Created by alishaalam on 7/19/16.
  */
@@ -111,8 +113,9 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             //Always show backdrop image for popular movies, irrespective of device orientation
             Picasso.with(mContext)
                     .load(movie.getBackdropPath())
-                    .fit()
                     .placeholder(R.drawable.ic_movie_placeholder)
+                    .transform(new RoundedCornersTransformation(10, 10))
+                    .fit()
                     .into(popularMovieViewHolder.vBackdropPath);
 
             int orientation = mContext.getResources().getConfiguration().orientation;
@@ -140,14 +143,16 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 Picasso.with(mContext)
                         .load(movie.getPosterPath())
-                        .fit().centerInside()
                         .placeholder(R.drawable.ic_movie_placeholder)
+                        .transform(new RoundedCornersTransformation(10, 10))
+                        .fit().centerInside()
                         .into(defaultMovieViewHolder.vPosterPath);
             }else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
                 Picasso.with(mContext)
                         .load(movie.getBackdropPath())
                         .placeholder(R.drawable.ic_movie_placeholder)
+                        .transform(new RoundedCornersTransformation(10, 10))
                         .into(defaultMovieViewHolder.vBackdropPath);
             }
         }

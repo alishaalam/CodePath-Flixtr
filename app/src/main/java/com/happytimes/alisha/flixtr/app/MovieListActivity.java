@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,20 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * An activity representing a list of Movies. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link MovieDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
 public class MovieListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
     public static boolean mTwoPane;
     RecyclerView recyclerView;
     MovieAdapter movieAdapter;
@@ -51,16 +38,13 @@ public class MovieListActivity extends AppCompatActivity {
     private static final String TAG = MovieListActivity.class.getSimpleName();
     public static final String MOVIE_URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=";
     public static final String API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
-    //public static final String PAGE_NUMBER = "/1";
 
     public static final Map<String, Movie> MOVIE_MAP = new HashMap<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
-
         //To reduce overdraw
         getWindow().setBackgroundDrawable(null);
 
@@ -95,8 +79,6 @@ public class MovieListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Movie movie = moviesList.get(position);
-                Toast.makeText(getApplicationContext(), movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
-
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putString(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(movie.getId()));
@@ -111,8 +93,6 @@ public class MovieListActivity extends AppCompatActivity {
                     intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(movie.getId()));
                     mContext.startActivity(intent);
                 }
-
-
             }
 
             @Override
@@ -158,6 +138,7 @@ public class MovieListActivity extends AppCompatActivity {
 
     private void displayDetails() {
         movieAdapter.notifyDataSetChanged();
+
     }
 
 
