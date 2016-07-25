@@ -145,7 +145,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .load(movie.getPosterPath())
                         .placeholder(R.drawable.ic_movie_placeholder)
                         .transform(new RoundedCornersTransformation(10, 10))
-                        .fit().centerInside()
+                        .fit()
                         .into(defaultMovieViewHolder.vPosterPath);
             }else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 

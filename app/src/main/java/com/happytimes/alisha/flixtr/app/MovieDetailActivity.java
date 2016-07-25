@@ -37,7 +37,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        
+
         fab_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
