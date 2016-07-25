@@ -37,8 +37,14 @@ The following **stretch** features have been implemented:
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
+## Flixtr in Portrait Mode
 
-<img src='//TODO' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/alishaalam/CodePath-Flixtr/blob/18d02a52befbf0f8b53ce07412da4aa207477e19/Flixtr_Portrait.gif' title='FLixtr_Portrait Video Walkthrough' width='' alt='Video Walkthrough' />
+
+## Flixtr in Landscape Mode
+
+<img src='https://github.com/alishaalam/CodePath-Flixtr/blob/356bf9b04dc62b08c0b022b2d2d254ce41e76138/Flixtr_Landscape.gif' title='FLixtr_Portrait Video Walkthrough' width='' alt='Video Walkthrough' />
+
 
 ## Notes
 * [x] Added support for sorting movies based on Popularity, Date Released & Title
