@@ -43,6 +43,7 @@ Here's a walkthrough of implemented user stories:
 ## Notes
 * [x] Added support for sorting movies based on Popularity, Date Released & Title
 * [x] Added support for marking a movie as favorite using the floating action button, in the movie detail activity.
+* [x] Used the Day/Night Appcompat theme. The theme is applied in the Detail Activity.
 * [x] Added support for Recycler view
 * [x] Each movie is represented using a CardView
 
