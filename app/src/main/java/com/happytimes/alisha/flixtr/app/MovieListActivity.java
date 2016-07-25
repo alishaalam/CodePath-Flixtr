@@ -30,10 +30,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieListActivity extends AppCompatActivity {
 
     public static boolean mTwoPane;
-    RecyclerView recyclerView;
     MovieAdapter movieAdapter;
     List<Movie> moviesList = new ArrayList<>();
 
@@ -45,14 +47,22 @@ public class MovieListActivity extends AppCompatActivity {
 
     public static final Map<String, Movie> MOVIE_MAP = new HashMap<>();
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.movie_list)
+    RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+
+        ButterKnife.bind(this);
+
         //To reduce overdraw
         getWindow().setBackgroundDrawable(null);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
@@ -69,7 +79,6 @@ public class MovieListActivity extends AppCompatActivity {
     }
 
     private void initializeRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.movie_list);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -145,11 +154,11 @@ public class MovieListActivity extends AppCompatActivity {
 
         for (final Movie movie : moviesList) {
             String url = movieHostUrl + String.valueOf(movie.getId()) + movieTrailerUrl + apiKey;
-            JacksonRequest<TrailerCollection> jacksonRequest = new JacksonRequest<>
+            JacksonRequest<TrailerCollection> trailerRequest = new JacksonRequest<>
                     (Request.Method.GET, url, null, TrailerCollection.class, new Response.Listener<TrailerCollection>() {
                         @Override
                         public void onResponse(TrailerCollection response) {
-                            Log.d(TAG + "Response", response.toString());
+                            Log.d(TAG, "Response: " + response.toString());
                             parseTrailerDetails(movie, response);
                         }
 
@@ -157,12 +166,13 @@ public class MovieListActivity extends AppCompatActivity {
 
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, "Trailer Error Response: " + error.getMessage());
                             error.printStackTrace();
                         }
                     });
 
-            // Adding a request (in this example, called jacksonRequest) to the RequestQueue.
-            VolleySingleton.getInstance(this).addToRequestQueue(jacksonRequest, TAG);
+            // Adding the request (in this example, called jacksonRequest) to the RequestQueue.
+            VolleySingleton.getInstance(this).addToRequestQueue(trailerRequest, TAG);
         }
 
     }

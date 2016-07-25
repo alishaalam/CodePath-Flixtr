@@ -57,7 +57,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (mMoviesList.get(position) == null) {
             return VIEW_PROG;
         } else {
-            if (mMoviesList.get(position).getVoteAverage() > 5.0) {
+            if (mMoviesList.get(position).isPopular()) {
                 return POPULAR_MOVIE;
             } else {
                 return DEFAULT_MOVIE;
@@ -94,6 +94,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 break;
             case POPULAR_MOVIE:
                 PopularMovieViewHolder popularMovieViewHolder = (PopularMovieViewHolder) viewHolder;
+
                 configurePopularMovieViewHolder(popularMovieViewHolder, position);
                 break;
             case DEFAULT_MOVIE:

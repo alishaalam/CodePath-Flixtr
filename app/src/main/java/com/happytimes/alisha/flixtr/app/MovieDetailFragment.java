@@ -16,6 +16,9 @@ import com.happytimes.alisha.flixtr.R;
 import com.happytimes.alisha.flixtr.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
@@ -31,6 +34,21 @@ public class MovieDetailFragment extends Fragment {
     private static final Float MAX_VOTE_AVERAGE = 8.0f;
     private static final Float MAX_RATING = 5.0f;
 
+
+    @BindView(R.id.movie_review_rating)
+    RatingBar rbProductRating;
+
+    @BindView(R.id.movie_vote_count)
+    TextView tvMovieCount;
+
+    @BindView(R.id.movie_title)
+    TextView tvTitle;
+
+    @BindView(R.id.movie_overview)
+    TextView tvOverview;
+
+    private Unbinder unbinder;
+
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -38,7 +56,7 @@ public class MovieDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
 
     /**
-     * The dummy content this fragment is presenting.
+     * The content this fragment is presenting.
      */
     private Movie mMovie;
 
@@ -48,6 +66,7 @@ public class MovieDetailFragment extends Fragment {
      */
     public MovieDetailFragment() {
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,20 +112,29 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         // Show the content as specified in the layout
         if (mMovie != null) {
 
-            RatingBar rbProductRating = (RatingBar) rootView.findViewById(R.id.movie_review_rating);
             float rating = ((float) mMovie.getVoteAverage() * MAX_RATING) / MAX_VOTE_AVERAGE;
             rbProductRating.setRating(rating);
 
             String str_vote_count = "(" + mMovie.getVoteCount() + " votes)";
-            ((TextView) rootView.findViewById(R.id.movie_vote_count)).setText(str_vote_count);
-            ((TextView) rootView.findViewById(R.id.movie_title)).setText(mMovie.getTitle());
-            ((TextView) rootView.findViewById(R.id.movie_overview)).setText(mMovie.getOverview());
+            tvMovieCount.setText(str_vote_count);
+
+            tvTitle.setText(mMovie.getTitle());
+            tvOverview.setText(mMovie.getOverview());
         }
         return rootView;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
 }

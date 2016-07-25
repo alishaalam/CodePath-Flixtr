@@ -9,18 +9,22 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.happytimes.alisha.flixtr.R;
 import com.happytimes.alisha.flixtr.model.Movie;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by alishaalam on 7/24/16.
  */
 public class QuickPlayActivity extends YouTubeBaseActivity {
 
+    @BindView(R.id.player)
+    YouTubePlayerView youTubePlayerView;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_quick_play);
-
-        YouTubePlayerView youTubePlayerView =
-                (YouTubePlayerView) findViewById(R.id.player);
+        ButterKnife.bind(this);
 
         youTubePlayerView.initialize(MovieListActivity.API_KEY,
                 new YouTubePlayer.OnInitializedListener() {
@@ -37,18 +41,7 @@ public class QuickPlayActivity extends YouTubeBaseActivity {
                     @Override
                     public void onInitializationFailure(YouTubePlayer.Provider provider,
                                                         YouTubeInitializationResult youTubeInitializationResult) {
-
                     }
                 });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 }

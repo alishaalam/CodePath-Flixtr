@@ -12,6 +12,9 @@ import android.view.View;
 
 import com.happytimes.alisha.flixtr.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * An activity representing a single Movie detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
@@ -22,17 +25,20 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String TAG = MovieDetailActivity.class.getSimpleName();
 
+    @BindView(R.id.detail_toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.fab_favorite)
+    FloatingActionButton fab_favorite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        
+        fab_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "This movie has been saved in your favorites", Snackbar.LENGTH_LONG)

@@ -21,9 +21,8 @@
         </menu>
     </item>
     <item
-        android:id="@+id/miSearch"
+        android:id="@+id/miSettings"
         app:showAsAction="ifRoom|withText"
-        android:title="Search">
-        <!--android:icon="@drawable/ic_content"-->
+        android:title="Settings">
     </item>
 </menu>
