@@ -1,6 +1,7 @@
 package com.happytimes.alisha.flixtr.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -77,6 +78,14 @@ public class MovieDetailFragment extends Fragment {
                         .transform(new RoundedCornersTransformation(10, 10))
                         .into(movie_backdrop);
 
+                movie_backdrop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), QuickPlayActivity.class);
+                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(mMovie.getId()));
+                        getContext().startActivity(intent);
+                    }
+                });
             }
         }
     }

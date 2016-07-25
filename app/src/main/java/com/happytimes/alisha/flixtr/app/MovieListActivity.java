@@ -95,12 +95,10 @@ public class MovieListActivity extends AppCompatActivity {
                     Intent intent;
                     if(mMovie.isPopular()) {
                         intent = new Intent(mContext, QuickPlayActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(mMovie.getId()));
                     } else {
                         intent = new Intent(mContext, MovieDetailActivity.class);
-                        intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(mMovie.getId()));
                     }
-
+                    intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, String.valueOf(mMovie.getId()));
                     mContext.startActivity(intent);
                 }
             }

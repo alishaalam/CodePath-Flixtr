@@ -19,8 +19,6 @@ public class QuickPlayActivity extends YouTubeBaseActivity {
         super.onCreate(bundle);
         setContentView(R.layout.activity_quick_play);
 
-
-
         YouTubePlayerView youTubePlayerView =
                 (YouTubePlayerView) findViewById(R.id.player);
 
